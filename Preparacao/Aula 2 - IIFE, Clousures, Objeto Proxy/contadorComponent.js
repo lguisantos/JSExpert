@@ -20,7 +20,10 @@ class ContadorComponent {
                 return true
             }
         }
-
+        /**
+         * @description Essa é a função chave desta aula, a Proxy nada mais é que eu event listener que fica monitorando o valor de um objeto
+         *              Sempre que o valor mudar, uma função será chamada para executar um determinada ação
+         */
         const contador = new Proxy({
             valor: VALOR_CONTADOR,
             efetuarParada: () => { }
@@ -30,7 +33,7 @@ class ContadorComponent {
     }
 
     /**
-     *@description Função do tipo Clousure
+     *@description Função do tipo Clousure para atualizar o texto da tela
      */
     atualizarTexto = ({ elementoContador, contador }) => () => {
         elementoContador.innerHTML = `Começando em <strong>${contador.valor--}</strong> segundos...`
@@ -38,6 +41,8 @@ class ContadorComponent {
 
     /**
      *@description Função do tipo Clousure, mas com uma sintaxe diferente, apenas para saber que dá para fazer
+     *             Observe que os parâmetros estão entre parênteses, isso chama-se destructuring, onde você manda um objeto
+     *             e consegue extrair somente as propriedade que quer utilizar 
      */
     agendarParadaContador({ elementoContador, idIntervalo }) {
         return () => {
@@ -55,6 +60,9 @@ class ContadorComponent {
          */
         return (valor = true) => {
             const atributo = 'disabled'
+            /**
+             * @description neste momento estamos utilizando o if ternário. Eu gosto bastante, pois o código fica muito simples
+             */
             valor ? elementoBotao.setAttribute(atributo, true) : elementoBotao.removeAttribute(atributo)
         }
     }
@@ -67,7 +75,7 @@ class ContadorComponent {
             contador
         }
         const fnClousure = this.atualizarTexto(argumentos)
-        const idIntervalo = setInterval(() => fnClousure(), 100)
+        const idIntervalo = setInterval(() => fnClousure(), PERIODO_INTERVALO)
 
         /**
          * @description criando um contexto separado dentro da função, logo podemos cria uma variável com o mesmo nome que a de cima.
@@ -79,6 +87,9 @@ class ContadorComponent {
 
 
             const argumentos = { elementoContador, idIntervalo }
+            /**
+             * @description para o agendamento da parada do contador, estamos utilizando o apply para substituir o valor do this
+             */
             const pararContadorFn = this.agendarParadaContador.apply({ desabilitarBotao }, [argumentos])
             contador.efetuarParada = pararContadorFn
         }
